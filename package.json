@@ -11,5 +11,8 @@
     "dev:admin": "npm --prefix admin run dev",
     "build": "npm --prefix client run build && npm --prefix admin run build",
     "start": "npm --prefix server run start"
+  },
+  "dependencies": {
+    "build": "^0.1.4"
   }
 }
