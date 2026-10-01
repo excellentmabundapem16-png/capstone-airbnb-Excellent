@@ -1,9 +1,7 @@
-/**
- * api.js – fetch wrapper with JWT header for the admin app.
- */
 export async function api(path, { method = 'GET', body, token, formData } = {}) {
   const headers = {};
   if (token) headers.Authorization = `Bearer ${token}`;
+
   let payload;
   if (formData) {
     payload = formData;
@@ -11,13 +9,16 @@ export async function api(path, { method = 'GET', body, token, formData } = {}) 
     headers['Content-Type'] = 'application/json';
     payload = JSON.stringify(body);
   }
-  const res = await fetch(`/api${path}`, { method, headers, body: payload });
+
+  const res = await fetch(resolveApiUrl(path), { method, headers, body: payload });
   let data = {};
+
   try {
     data = await res.json();
   } catch {
     /* ignore non-JSON */
   }
+
   if (!res.ok) throw new Error(data.message || `Request failed (${res.status})`);
   return data;
 }

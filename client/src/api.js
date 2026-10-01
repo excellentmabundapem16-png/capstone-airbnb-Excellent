@@ -1,24 +1,24 @@
-/**
- * api.js – tiny fetch wrapper used by every page.
- * Attaches the JWT (when present) and turns error payloads into Exceptions.
- */
 export async function api(path, { method = 'GET', body, token, formData } = {}) {
   const headers = {};
   if (token) headers.Authorization = `Bearer ${token}`;
+
   let payload;
   if (formData) {
-    payload = formData; // browser sets multipart boundary
+    payload = formData;
   } else if (body !== undefined) {
     headers['Content-Type'] = 'application/json';
     payload = JSON.stringify(body);
   }
-  const res = await fetch(`/api${path}`, { method, headers, body: payload });
+
+  const res = await fetch(resolveApiUrl(path), { method, headers, body: payload });
   let data = {};
+
   try {
     data = await res.json();
   } catch {
     /* non-JSON response */
   }
+
   if (!res.ok) throw new Error(data.message || `Request failed (${res.status})`);
   return data;
 }
